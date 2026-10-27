@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int ElemType;//栈中元素的数据类型
+
+//链式结构栈的节点 StackNode
+typedef struct StackNode
+{
+	ElemType data; //数据域：存放栈中的元素值；
+	struct StackNode *next; //指针域：存放指向下一个节点的地址（指针）
+}StackNode;
+
+//初始化
+StackNode* initStack()
+{
+	StackNode *s = (StackNode*)malloc(sizeof(StackNode));
+	s->data = 0;
+	s->next = NULL;
+	return s;
+}
+
+//新元素进栈
+void push(StackNode *s, ElemType e)
+{
+	//使用动态内存分配的形式创建新节点
+	StackNode *p = (StackNode*)malloc(sizeof(StackNode));
+	//将新节点的值赋值给数据域
+	p->data = e;
+	//将头节点指针域的内容赋值给新节点的指针域
+	p->next = s->next;
+	//将新结点的地址赋值给头节点的指针域
+	s->next = p;
+}
+
+//栈顶元素出栈
+int pop(StackNode *s, ElemType *e)
+{
+	//判断是否是空栈
+	if(s->next == NULL)
+	{
+		printf("空的\n");
+		return 0;
+	}
+	*e = s->next->data; //获取出栈元素的值
+	StackNode *q = s->next; //用指针q记录要出栈的节点
+	s->next = q->next; //改变头节点的后继节点实现出栈
+	free(q); //释放出栈节点的内存空间
+	return 1;
+}
+
+//获取栈顶元素
+int getTop(StackNode *s, ElemType *e)
+{
+	//判断是否是空栈
+	if (s->next == NULL)
+	{
+		printf("空的\n");
+		return 0;
+	}
+	//获取栈顶元素的值
+	*e = s->next->data;
+	return 1;
+}
+
+int main(int argc, char const *argv[])
+{
+	//声明一个链式结构的栈s,调用initStack函数返回一个链式结构的栈指针并赋值给s
+	StackNode *s = initStack();
+
+	//依次进栈
+	push(s, 10);
+	push(s, 20);
+	push(s, 30);
+	
+	//出栈
+	ElemType e;
+	pop(s, &e);
+	printf("%d\n", e);
+
+	//获取栈顶元素
+	getTop(s, &e);
+	printf("%d\n", e);
+	return 0;
+}
